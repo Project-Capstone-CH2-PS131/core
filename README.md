@@ -27,6 +27,12 @@ Build image and push to 'Artifact Registry'
 gcloud builds submit --tag $REGION-docker.pkg.dev/$PROJECT_ID/containers-repo/capstone/core:'version' --project $PROJECT_ID
 ```
 
+Setup environment
+
+```bash
+cp env.yml.example env.yml
+```
+
 Deploy to 'Cloud Run'
 
 ```bash
