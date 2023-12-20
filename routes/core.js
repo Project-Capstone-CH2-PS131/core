@@ -55,7 +55,7 @@ router.post('/ingredient', async function (req, res) {
           return;
         }
 
-        const recipes = await axios.get(`${RECIPE_API}?ingredients=${ingredients.toString()}&apiKey=${RECIPE_API_KEY}`);
+        const recipes = await axios.get(`${RECIPE_API}/findByIngredients?ingredients=${ingredients.toString()}&apiKey=${RECIPE_API_KEY}`);
 
         res.status(200)
           .json({
@@ -76,6 +76,28 @@ router.post('/ingredient', async function (req, res) {
       })
       .end();
   }
+});
+
+router.get('/random-recipes', async function (_, res) {
+  try {
+    const recipes = await axios.get(`${RECIPE_API}/complexSearch?cuisine=asian&number=6&apiKey=${RECIPE_API_KEY}`);
+    res.status(200)
+      .json({
+        'error': false,
+        'message': 'Some Recipes',
+        'recipes': recipes.data,
+      })
+      .end();
+  } catch (error) {
+    res.status(500)
+      .json({
+        'error': true,
+        'message': 'Server Error',
+        'data': error.message,
+      })
+      .end();
+  }
+
 });
 
 module.exports = router;
