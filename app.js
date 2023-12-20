@@ -1,20 +1,26 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const logger = require('morgan');
+const multer = require('multer');
+const indexRouter = require('./routes/index');
+const coreRouter = require('./routes/core');
+const notFoundRouter = require('./routes/notFound');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const app = express();
+const upload = multer({
+  storage: multer.memoryStorage(),
+});
 
-var app = express();
+const { NODE_ENV } = process.env;
 
-app.use(logger('dev'));
+app.use(logger(
+  NODE_ENV === 'production' ? 'common' : 'dev'
+));
+app.use(upload.single('image'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/v1/core', coreRouter);
+app.use('/*', notFoundRouter);
 
 module.exports = app;
